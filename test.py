@@ -64,3 +64,5 @@ s2 = "qwer"	#"we"
 for i in ['abcde','qwer']:
     print(i[(len(i)-1)//2:len(i)//2+1])
     print([(len(i)-1)//2,len(i)//2+1])
+
+print('test')
