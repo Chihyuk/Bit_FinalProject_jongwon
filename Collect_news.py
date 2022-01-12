@@ -14,7 +14,7 @@ import re
 class Collect_news:
     #네이버 뉴스는 10분마다 새로고침 된다!!!
     options = Options()
-    # options.add_argument('headless') # 브라우저를 화면에 안띄운다.
+    options.add_argument('headless') # 브라우저를 화면에 안띄운다.
     chrome = webdriver.Chrome(options=options)
     url = "https://news.naver.com/"
     chrome.implicitly_wait(3) # 브라우저가 웹페이지전체를 로드할때까지 최대 3초 기다리게 설정
@@ -105,6 +105,8 @@ class Collect_news:
     def read_one_news(link :str) -> Article():
         original_window = Collect_news.chrome.current_window_handle
         Collect_news.chrome.switch_to.new_window('tab')
+        if re.search('^https://news.naver.com/main',link) == None:
+            return Article()
         Collect_news.chrome.get(link)
 
         temp = Article()
@@ -125,7 +127,16 @@ class Collect_news:
             temp.pic_link = Collect_news.chrome.find_element(By.CSS_SELECTOR, '#articleBodyContents > span.end_photo_org').get_attribute('src')
         except:
             temp.pic_link = None
-        temp.time = Collect_news.chrome.find_element(By.XPATH, '//*[@id="main_content"]/div[1]/div[3]/div/span').text
+
+        time = Collect_news.chrome.find_element(By.XPATH, '//*[@id="main_content"]/div[1]/div[3]/div/span').text
+        YMD = re.search('^([0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}).*', time).group(1)
+        AMPM = re.search('.*(오후|오전).*', time).group(1)
+        hour = int(re.search('.*([0-9]+):([0-9]+).*', time).group(1))
+        minute = re.search('.*([0-9]+):([0-9]+).*', time).group(2)
+        if AMPM == '오후':
+            hour += 12
+        temp.time = YMD + " " + str(hour) + ":" + minute
+
         temp.link =	Collect_news.chrome.find_element(By.LINK_TEXT, '기사원문').get_attribute('href')
 
         Collect_news.chrome.close()
@@ -192,5 +203,11 @@ if __name__ == "__main__":
     # Collect_news.set_page('https://news.naver.com/main/list.naver?mode=LS2D&sid2=259&mid=shm&sid1=101&date=20220106&page=11')
     # Collect_news.read_one_page('https://news.naver.com/main/list.naver?mode=LS2D&sid2=259&sid1=101&mid=shm&date=20220106&page=1')
     # Collect_news.collect_all_press()
-    Collect_news.chrome.get('https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=101&sid2=259')
-    Collect_news.collect_past_news(10)
+    # Collect_news.chrome.get('https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=101&sid2=259')
+    # Collect_news.collect_past_news(10)
+    # Collect_news.read_one_news('https://news.naver.com/main/read.naver?mode=LS2D&mid=shm&sid1=101&sid2=259&oid=001&aid=0012911531')
+    # Collect_news.chrome.get('https://m.blog.naver.com/kkang9901/221938267662')
+    # test = Collect_news.chrome.find_element(By.XPATH, '//*[@id="SE-6a5d18b9-1296-40a7-835d-1832b12879d2"]/div/div/div')
+    # print(test.text)
+    print(Collect_news.read_one_news('https://entertain.naver.com/home').title)
+    ...

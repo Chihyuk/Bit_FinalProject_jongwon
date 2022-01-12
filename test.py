@@ -53,16 +53,20 @@ from selenium.webdriver.common.by import By
 #     # print(tt.__next__())
 #     print(next(tt()))
 
-s1 = "abcde"	#"c"
-s2 = "qwer"	#"we"
+# s1 = "abcde"	#"c"
+# s2 = "qwer"	#"we"
 
-# n = len(s2)-1
-# if n%2 == 0:
-#     print(s2[int(n/2):int((n/2)+1)])
-# else:
-#     print(s2[(n-1)//2:(n+1)//2+1])
-for i in ['abcde','qwer']:
-    print(i[(len(i)-1)//2:len(i)//2+1])
-    print([(len(i)-1)//2,len(i)//2+1])
+# # n = len(s2)-1
+# # if n%2 == 0:
+# #     print(s2[int(n/2):int((n/2)+1)])
+# # else:
+# #     print(s2[(n-1)//2:(n+1)//2+1])
+# for i in ['abcde','qwer']:
+#     print(i[(len(i)-1)//2:len(i)//2+1])
+#     print([(len(i)-1)//2,len(i)//2+1])
 
-print('test')
+import datetime
+
+# t1 = datetime.datetime()
+td = datetime.timedelta(hours=13)
+print(td)
